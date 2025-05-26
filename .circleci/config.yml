@@ -58,7 +58,7 @@ jobs:
 
       - run:
           name: Run E2E Tests
-          command: npm run test:e2e -- --ci --detectOpenHandles --forceExit --reporters=default --reporters=jest-junit
+          command: npm run test:e2e -- --ci --detectOpenHandles --reporters=default --reporters=jest-junit
 
       - store_test_results:
           path: test-results
