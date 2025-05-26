@@ -17,7 +17,7 @@ describe('AppController (e2e)', () => {
   });
 
   afterAll(async () => {
-    await app.close(); // ✅ This shuts down HTTP server, DB, etc.
+    await app.close();
   });
 
   it('/ (GET)', () => {
