@@ -21,4 +21,11 @@ export class RedisService implements OnModuleInit {
       console.error('Redis connection error:', err);
     });
   }
+
+  onmoduleDestroy() {
+    if (this.redisCluster) {
+      this.redisCluster.disconnect();
+      console.log('Disconnected from Redis');
+    }
+  }
 }
