@@ -1,0 +1,64 @@
+version: 2.1
+
+executors:
+  node_executor:
+    docker:
+      - image: cimg/node:23.10.0
+    working_directory: ~/repo
+
+jobs:
+  test:
+    docker:
+      - image: cimg/node:23.10.0
+      - image: mysql:8
+        environment:
+          MYSQL_ROOT_PASSWORD: ztlab138
+          MYSQL_DATABASE: rubato_test
+      - image: grokzen/redis-cluster:7.0.11
+        environment:
+          IP: 127.0.0.1
+    working_directory: ~/repo
+    steps:
+      - checkout
+
+      - run:
+          name: Wait for MySQL to be ready
+          command: |
+            for i in `seq 1 30`; do
+              nc -z 127.0.0.1 3306 && echo "MySQL is up" && break
+              echo "Waiting for MySQL..."
+              sleep 2
+            done
+
+      - run:
+          name: Import schema to MySQL
+          command: |
+            sudo apt-get update && sudo apt-get install -y default-mysql-client
+            mysql -h 127.0.0.1 -u root -pztlab138 rubato_test < ./dump.sql
+
+      - run:
+          name: Wait for Redis Cluster to be ready
+          command: |
+            for i in `seq 1 30`; do
+              nc -z 127.0.0.1 7001 && echo "Redis Cluster is up" && break
+              echo "Waiting for Redis Cluster..."
+              sleep 2
+            done
+
+      - run:
+          name: Install dependencies
+          command: npm ci
+
+      - run:
+          name: Run Unit Tests
+          command: npm run test
+
+      - run:
+          name: Run E2E Tests
+          command: npm run test:e2e
+
+workflows:
+  version: 2
+  test_and_deploy:
+    jobs:
+      - test
