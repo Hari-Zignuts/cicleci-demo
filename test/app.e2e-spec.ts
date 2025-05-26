@@ -16,6 +16,10 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
+  afterAll(async () => {
+    await app.close(); // ✅ This shuts down HTTP server, DB, etc.
+  });
+
   it('/ (GET)', () => {
     return request(app.getHttpServer())
       .get('/')
