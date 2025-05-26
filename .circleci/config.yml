@@ -14,6 +14,7 @@ jobs:
         environment:
           MYSQL_ROOT_PASSWORD: ztlab138
           MYSQL_DATABASE: rubato_test
+        command: --default-authentication-plugin=mysql_native_password
       - image: grokzen/redis-cluster:7.0.11
         environment:
           IP: 127.0.0.1
@@ -31,12 +32,6 @@ jobs:
               echo "Waiting for MySQL..."
               sleep 2
             done
-
-      - run:
-          name: Alter MySQL root user auth plugin
-          command: |
-            sudo apt-get update && sudo apt-get install -y default-mysql-client
-            mysql -h 127.0.0.1 -u root -pztlab138 -e "ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'ztlab138'; FLUSH PRIVILEGES;"
 
       - run:
           name: Import schema to MySQL
