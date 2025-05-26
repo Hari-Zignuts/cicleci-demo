@@ -11,9 +11,9 @@ export class AppService {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const tables = await this.dataSource.query('SHOW TABLES');
-      this.logger.log(`Tables in database: ${JSON.stringify(tables)}`);
+      console.log(`Tables in database: ${JSON.stringify(tables)}`);
     } catch (error) {
-      this.logger.error('Failed to connect to DB or fetch tables:', error);
+      console.error('Failed to connect to DB or fetch tables:', error);
     }
 
     return 'Hello World!';
